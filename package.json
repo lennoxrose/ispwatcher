@@ -1,0 +1,15 @@
+{
+  "name": "ISPwatcher",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Automates proving ISP underperformance under § 57 TKG",
+  "license": "MIT",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.25.0",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@11.25.0"
+}

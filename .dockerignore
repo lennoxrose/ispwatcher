@@ -1,0 +1,25 @@
+# Dependencies — installed fresh inside the image, never copied from host
+node_modules
+**/node_modules
+
+# Env files — never bake secrets into an image layer
+.env
+.env.*
+!.env.example
+
+# VCS / editor
+.git
+.gitignore
+
+# Build output / generated client — rebuilt fresh inside the image so the
+# platform-specific Prisma binaries match the container, not the host
+apps/backend/dist
+apps/backend/src/generated
+
+# Tests — excluded from the production image entirely
+**/*.test.ts
+
+# Skill/reference directories — irrelevant to the app, just bulk
+.claude
+.agents
+.windsurf

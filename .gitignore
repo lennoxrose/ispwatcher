@@ -1,0 +1,18 @@
+node_modules
+# Keep environment variables out of version control
+.env
+
+apps/backend/src/generated/prisma
+apps/backend/dist
+
+# Dont include Ai Files
+CLAUDE.md
+skills-lock.json
+.claude
+.agents
+.windsurf
+
+# private, not ai-related
+tmp.txt
+.windsurf/
+.claude/

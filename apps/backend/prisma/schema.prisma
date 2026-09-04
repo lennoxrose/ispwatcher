@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql" // MariaDB uses the mysql connector, no separate provider
+  // no `url` here anymore — Prisma 7 moved connection config to prisma.config.ts
+}
+
+enum CampaignStatus {
+  PENDING
+  RUNNING
+  COMPLETE
+  FAILED_INSUFFICIENT_DATA
+}
+
+model Contract {
+  id              Int             @id @default(autoincrement())
+  ispName         String
+  ispAddress      String
+  maxSpeedMbit    Float
+  normalSpeedMbit Float
+  minSpeedMbit    Float
+  createdAt       DateTime        @default(now())
+  campaigns       Campaign[]
+  monitoringRuns  MonitoringRun[]
+}
+
+// LAYER 1 — continuous self-monitoring. One row per automated speedtest-client
+// run against our own server. Documentation only, never the § 57 TKG proof —
+// see plans.md §2a/§5 and CLAUDE.md's "label estimates as estimates" rule.
+model MonitoringRun {
+  id           Int      @id @default(autoincrement())
+  contractId   Int
+  contract     Contract @relation(fields: [contractId], references: [id])
+  timestamp    DateTime @default(now())
+  downloadMbit Float
+  uploadMbit   Float
+  pingMs       Float
+
+  @@index([contractId])
+  @@index([contractId, timestamp])
+}
+
+model Campaign {
+  id             Int             @id @default(autoincrement())
+  contractId     Int
+  contract       Contract        @relation(fields: [contractId], references: [id])
+  status         CampaignStatus  @default(PENDING)
+  startedAt      DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime        @default(now())
+  measurements   Measurement[]
+  complaintDraft ComplaintDraft?
+
+  @@index([contractId])
+}
+
+model Measurement {
+  id           Int      @id @default(autoincrement())
+  campaignId   Int
+  campaign     Campaign @relation(fields: [campaignId], references: [id])
+  timestamp    DateTime @default(now())
+  downloadMbit Float
+  uploadMbit   Float
+  pingMs       Float
+  dayIndex     Int      // 1, 2, or 3 — which calendar day of the campaign
+
+  @@index([campaignId])
+  @@index([campaignId, dayIndex])
+}
+
+model ComplaintDraft {
+  id                      Int       @id @default(autoincrement())
+  campaignId              Int       @unique
+  campaign                Campaign  @relation(fields: [campaignId], references: [id])
+  pdfPath                 String
+  generatedAt             DateTime  @default(now())
+  sentAt                  DateTime?
+  claimedReductionPercent Float
+}
