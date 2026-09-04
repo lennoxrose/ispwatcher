@@ -1,6 +1,13 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider             = "prisma-client"
+  output               = "../src/generated/prisma"
+  moduleFormat         = "esm"
+  // Pinned explicitly: the generator's environment auto-detection for this
+  // isn't guaranteed to agree between platforms, which caused the compiled
+  // client to reference "./enums.ts" (a file that doesn't exist post-tsc-
+  // build — tsc emits .js) in the container build but not locally on
+  // Windows. Forcing .js here matches what tsc actually produces.
+  importFileExtension  = "js"
 }
 
 datasource db {
