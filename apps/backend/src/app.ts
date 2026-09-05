@@ -1,8 +1,11 @@
 import Fastify, { type FastifyError } from "fastify";
+import multipart from "@fastify/multipart";
 import { checkDbHealth } from "./db/index.js";
 import { contractRoutes } from "./modules/contract/contract.routes.js";
 import { campaignRoutes } from "./modules/campaign/campaign.routes.js";
 import { monitoringRoutes } from "./modules/monitoring/monitoring.routes.js";
+import { protocolRoutes } from "./modules/protocol/protocol.routes.js";
+import { complaintRoutes } from "./modules/complaint/complaint.routes.js";
 import { NotFoundError, ValidationError, ConflictError } from "./shared/errors.js";
 import { logger } from "./lib/logger.js";
 
@@ -38,9 +41,13 @@ export function buildApp() {
     });
   });
 
+  app.register(multipart, { limits: { fileSize: 10 * 1024 * 1024 } });
+
   app.register(contractRoutes, { prefix: "/contracts" });
   app.register(campaignRoutes, { prefix: "/campaigns" });
+  app.register(protocolRoutes, { prefix: "/campaigns" });
   app.register(monitoringRoutes, { prefix: "/monitoring" });
+  app.register(complaintRoutes, { prefix: "/complaints" });
 
   return app;
 }

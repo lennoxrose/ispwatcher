@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "build": "tsc && node -e \"require('fs').cpSync('src/pdf/templates','dist/pdf/templates',{recursive:true})\"",
     "start": "node dist/server.js",
     "test": "tsx --test src/**/*.test.ts",
     "prisma:generate": "prisma generate",
@@ -14,12 +14,14 @@
     "prisma:status": "prisma migrate status"
   },
   "dependencies": {
+    "@fastify/multipart": "^9.2.1",
     "@prisma/adapter-mariadb": "^7.10.0",
     "@prisma/client": "^7.10.0",
     "dotenv": "^17.4.2",
     "fastify": "^5.12.1",
     "pino": "^10.3.1",
-    "prisma": "7.10.0"
+    "prisma": "7.10.0",
+    "puppeteer": "^24.10.0"
   },
   "devDependencies": {
     "@types/node": "^26.4.1",

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<style>
+  @page { size: A4; margin: 25mm 20mm 20mm 25mm; }
+  body { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.5; color: #1a1a1a; }
+  .sender-line { font-size: 8pt; text-decoration: underline; margin-bottom: 2mm; }
+  .recipient { margin-top: 5mm; margin-bottom: 15mm; white-space: pre-line; }
+  .date { text-align: right; margin-bottom: 10mm; }
+  .subject { font-weight: bold; margin-bottom: 6mm; }
+  .disclaimer { margin-top: 10mm; padding: 3mm; border: 1px solid #999; font-size: 9pt; font-style: italic; }
+  .signature { margin-top: 20mm; }
+  table.data { border-collapse: collapse; margin: 5mm 0; }
+  table.data td, table.data th { border: 1px solid #999; padding: 2mm 4mm; text-align: left; font-size: 10pt; }
+</style>
+</head>
+<body>
+  <div class="sender-line">{{SENDER_NAME}}, {{SENDER_ADDRESS}}</div>
+  <div class="recipient">{{ISP_NAME}}
+{{ISP_ADDRESS}}</div>
+
+  <div class="date">{{SENDER_CITY}}, {{DATE}}</div>
+
+  <div class="subject">Betreff: Anfrage zur Überprüfung der Internetanschlussgeschwindigkeit</div>
+
+  <p>Sehr geehrte Damen und Herren,</p>
+
+  <p>seit einiger Zeit beobachte ich bei meinem Internetanschluss wiederholt eine Geschwindigkeit,
+  die spürbar unter der vertraglich vereinbarten „normalerweise zur Verfügung stehenden"
+  Geschwindigkeit von {{NORMAL_SPEED}} Mbit/s liegt.</p>
+
+  <p>Zur Dokumentation führe ich eine eigene, regelmäßige Messung gegen einen selbst betriebenen
+  Messserver durch. Im Beobachtungszeitraum der letzten {{WINDOW_DAYS}} Tage lagen
+  {{BELOW_PERCENT}} % von insgesamt {{SAMPLE_SIZE}} Messungen unterhalb der vertraglich
+  zugesicherten Normgeschwindigkeit.</p>
+
+  <table class="data">
+    <tr><th>Beobachtungszeitraum</th><td>{{WINDOW_DAYS}} Tage</td></tr>
+    <tr><th>Anzahl Messungen</th><td>{{SAMPLE_SIZE}}</td></tr>
+    <tr><th>Anteil unterhalb Normgeschwindigkeit</th><td>{{BELOW_PERCENT}} %</td></tr>
+    <tr><th>Vertraglich vereinbarte Normgeschwindigkeit</th><td>{{NORMAL_SPEED}} Mbit/s</td></tr>
+  </table>
+
+  <p>Ich bitte Sie höflich, die Leitung bzw. den Anschluss auf mögliche Ursachen zu überprüfen
+  und mir das Ergebnis der Prüfung mitzuteilen.</p>
+
+  <div class="disclaimer">
+    Hinweis: Die oben genannten Werte beruhen auf einer selbst durchgeführten, fortlaufenden
+    Eigenmessung und stellen ausdrücklich <strong>keine</strong> Messung nach dem von der
+    Bundesnetzagentur bereitgestellten Verfahren (Desktop-App gemäß § 57 TKG) dar. Dieses
+    Schreiben ist eine formlose Bitte um Prüfung und keine förmliche Mängelrüge oder Ankündigung
+    einer Entgeltminderung.
+  </div>
+
+  <p>Mit freundlichen Grüßen</p>
+
+  <div class="signature">{{SENDER_NAME}}</div>
+</body>
+</html>

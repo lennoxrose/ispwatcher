@@ -1,4 +1,5 @@
 import { Prisma } from "../../generated/prisma/client.js";
+import type { Measurement } from "../../generated/prisma/client.js";
 import { prisma } from "../../db/index.js";
 import { NotFoundError } from "../../shared/errors.js";
 import type {
@@ -6,6 +7,7 @@ import type {
   CampaignStatus,
   CampaignWithDetails,
   CreateCampaignInput,
+  LogMeasurementInput,
 } from "./campaign.types.js";
 
 export const campaignRepository = {
@@ -47,5 +49,21 @@ export const campaignRepository = {
       }
       throw error;
     }
+  },
+
+  async addMeasurement(
+    campaignId: number,
+    data: LogMeasurementInput & { dayIndex: number; timestamp: Date },
+  ): Promise<Measurement> {
+    return prisma.measurement.create({
+      data: {
+        campaignId,
+        downloadMbit: data.downloadMbit,
+        uploadMbit: data.uploadMbit,
+        pingMs: data.pingMs,
+        dayIndex: data.dayIndex,
+        timestamp: data.timestamp,
+      },
+    });
   },
 };

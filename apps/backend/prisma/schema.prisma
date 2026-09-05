@@ -23,15 +23,16 @@ enum CampaignStatus {
 }
 
 model Contract {
-  id              Int             @id @default(autoincrement())
+  id              Int              @id @default(autoincrement())
   ispName         String
   ispAddress      String
   maxSpeedMbit    Float
   normalSpeedMbit Float
   minSpeedMbit    Float
-  createdAt       DateTime        @default(now())
+  createdAt       DateTime         @default(now())
   campaigns       Campaign[]
   monitoringRuns  MonitoringRun[]
+  complaintDrafts ComplaintDraft[]
 }
 
 // LAYER 1 — continuous self-monitoring. One row per automated speedtest-client
@@ -51,15 +52,16 @@ model MonitoringRun {
 }
 
 model Campaign {
-  id             Int             @id @default(autoincrement())
-  contractId     Int
-  contract       Contract        @relation(fields: [contractId], references: [id])
-  status         CampaignStatus  @default(PENDING)
-  startedAt      DateTime?
-  completedAt    DateTime?
-  createdAt      DateTime        @default(now())
-  measurements   Measurement[]
-  complaintDraft ComplaintDraft?
+  id               Int               @id @default(autoincrement())
+  contractId       Int
+  contract         Contract          @relation(fields: [contractId], references: [id])
+  status           CampaignStatus    @default(PENDING)
+  startedAt        DateTime?
+  completedAt      DateTime?
+  createdAt        DateTime          @default(now())
+  measurements     Measurement[]
+  officialProtocol OfficialProtocol?
+  complaintDrafts  ComplaintDraft[]
 
   @@index([contractId])
 }
@@ -78,12 +80,42 @@ model Measurement {
   @@index([campaignId, dayIndex])
 }
 
+// LAYER 2 — BNetzA's own signed protocol export, stored opaquely as the actual
+// legal proof (plans.md §4.4). Never parsed for structured data.
+model OfficialProtocol {
+  id         Int      @id @default(autoincrement())
+  campaignId Int      @unique
+  campaign   Campaign @relation(fields: [campaignId], references: [id])
+  filePath   String
+  uploadedAt DateTime @default(now())
+}
+
+enum ComplaintBasis {
+  SELF_MONITORING_ONLY
+  OFFICIAL_PROTOCOL
+}
+
+// Whether claimedReductionPercent tracks the live campaign-measurement
+// average (AUTO) or a value the user typed in and locked (MANUAL) — see
+// complaint.service.ts. Sticky until explicitly switched back to AUTO.
+enum ReductionPercentMode {
+  AUTO
+  MANUAL
+}
+
 model ComplaintDraft {
-  id                      Int       @id @default(autoincrement())
-  campaignId              Int       @unique
-  campaign                Campaign  @relation(fields: [campaignId], references: [id])
+  id                      Int                  @id @default(autoincrement())
+  contractId              Int
+  contract                Contract             @relation(fields: [contractId], references: [id])
+  campaignId              Int?
+  campaign                Campaign?            @relation(fields: [campaignId], references: [id])
+  basis                   ComplaintBasis
   pdfPath                 String
-  generatedAt             DateTime  @default(now())
+  generatedAt             DateTime             @default(now())
   sentAt                  DateTime?
-  claimedReductionPercent Float
+  claimedReductionPercent Float?
+  reductionPercentMode    ReductionPercentMode @default(AUTO)
+
+  @@index([contractId])
+  @@index([campaignId])
 }

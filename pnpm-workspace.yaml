@@ -5,3 +5,4 @@ allowBuilds:
   '@prisma/engines': false
   esbuild: false
   prisma: true
+  puppeteer: true

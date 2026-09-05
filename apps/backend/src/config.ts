@@ -20,6 +20,9 @@ interface Config {
       uploadBytes: number;
     };
   };
+  storage: {
+    dataDir: string;
+  };
 }
 
 function requireEnv(name: string): string {
@@ -78,5 +81,11 @@ export const config: Config = {
       downloadCkSize: optionalPositiveIntEnv("SPEEDTEST_DOWNLOAD_CK_SIZE", 10),
       uploadBytes: optionalPositiveIntEnv("SPEEDTEST_UPLOAD_BYTES", 5_000_000),
     },
+  },
+  storage: {
+    // Uploaded protocols + generated complaint PDFs. Defaults to a relative
+    // path for local dev; production points this at a mounted PVC (see the
+    // argocd repo's apps/speed-nachweis/ deployment).
+    dataDir: process.env.DATA_DIR ?? "./data",
   },
 };

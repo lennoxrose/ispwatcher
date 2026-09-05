@@ -32,9 +32,28 @@ const updateStatusSchema = {
   },
 };
 
+const logMeasurementSchema = {
+  ...idParamSchema,
+  body: {
+    type: "object",
+    required: ["downloadMbit", "uploadMbit", "pingMs"],
+    properties: {
+      downloadMbit: { type: "number", minimum: 0 },
+      uploadMbit: { type: "number", minimum: 0 },
+      pingMs: { type: "number", minimum: 0 },
+    },
+  },
+};
+
 export async function campaignRoutes(app: FastifyInstance): Promise<void> {
   app.get("/", campaignController.list);
   app.get("/:id", { schema: idParamSchema }, campaignController.get);
   app.post("/", { schema: createCampaignSchema }, campaignController.create);
   app.patch("/:id/status", { schema: updateStatusSchema }, campaignController.updateStatus);
+  app.get("/:id/gate", { schema: idParamSchema }, campaignController.getGate);
+  app.post(
+    "/:id/measurements",
+    { schema: logMeasurementSchema },
+    campaignController.logMeasurement,
+  );
 }

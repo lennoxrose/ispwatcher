@@ -23,3 +23,24 @@ export type CampaignEvaluation = {
   underperforming: boolean;
   failedCriteria: UnderperformanceCriterion[];
 };
+
+export type LogMeasurementInput = {
+  downloadMbit: number;
+  uploadMbit: number;
+  pingMs: number;
+};
+
+// Result of checking the BNetzA timing rules (plans.md §2) against a
+// campaign's existing measurements as of `now`. Read-only status when used
+// via getMeasurementGate(); the same shape backs the throw reason when
+// logMeasurement() rejects an out-of-turn measurement.
+export type MeasurementGate = {
+  allowed: boolean;
+  reason?: string;
+  nextAllowedAt?: Date;
+  progress: {
+    totalLogged: number;
+    daysUsed: number;
+    todayLogged: number;
+  };
+};

@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import * as campaignService from "./campaign.service.js";
-import type { CampaignStatus, CreateCampaignInput } from "./campaign.types.js";
+import type { CampaignStatus, CreateCampaignInput, LogMeasurementInput } from "./campaign.types.js";
 
 export async function list(_request: FastifyRequest, reply: FastifyReply): Promise<void> {
   const campaigns = await campaignService.listCampaigns();
@@ -32,4 +32,23 @@ export async function updateStatus(
     request.body.status,
   );
   reply.send(campaign);
+}
+
+export async function getGate(
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply,
+): Promise<void> {
+  const gate = await campaignService.getMeasurementGate(Number(request.params.id));
+  reply.send(gate);
+}
+
+export async function logMeasurement(
+  request: FastifyRequest<{ Params: { id: string }; Body: LogMeasurementInput }>,
+  reply: FastifyReply,
+): Promise<void> {
+  const measurement = await campaignService.logMeasurement(
+    Number(request.params.id),
+    request.body,
+  );
+  reply.code(201).send(measurement);
 }

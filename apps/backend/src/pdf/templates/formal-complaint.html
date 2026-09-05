@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<style>
+  @page { size: A4; margin: 25mm 20mm 20mm 25mm; }
+  body { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.5; color: #1a1a1a; }
+  .sender-line { font-size: 8pt; text-decoration: underline; margin-bottom: 2mm; }
+  .recipient { margin-top: 5mm; margin-bottom: 15mm; white-space: pre-line; }
+  .date { text-align: right; margin-bottom: 10mm; }
+  .subject { font-weight: bold; margin-bottom: 6mm; }
+  .note { margin-top: 10mm; padding: 3mm; border: 1px solid #999; font-size: 9pt; font-style: italic; }
+  .signature { margin-top: 20mm; }
+  .reduction { text-align: center; font-size: 14pt; font-weight: bold; margin: 6mm 0; }
+  table.data { border-collapse: collapse; margin: 5mm 0; width: 100%; }
+  table.data td, table.data th { border: 1px solid #999; padding: 2mm 4mm; text-align: left; font-size: 10pt; }
+  ol.criteria li { margin-bottom: 2mm; }
+  .attachment-note { margin-top: 10mm; font-size: 9pt; }
+</style>
+</head>
+<body>
+  <div class="sender-line">{{SENDER_NAME}}, {{SENDER_ADDRESS}}</div>
+  <div class="recipient">{{ISP_NAME}}
+{{ISP_ADDRESS}}</div>
+
+  <div class="date">{{SENDER_CITY}}, {{DATE}}</div>
+
+  <div class="subject">Betreff: Mängelrüge und Ankündigung der Minderung des Entgelts gemäß
+  § 57 Abs. 4 TKG</div>
+
+  <p>Sehr geehrte Damen und Herren,</p>
+
+  <p>im Zeitraum vom {{CAMPAIGN_START}} bis zum {{CAMPAIGN_END}} habe ich gemäß dem von der
+  Bundesnetzagentur bereitgestellten Überwachungsmechanismus (Desktop-App der Bundesnetzagentur)
+  eine Messung der Geschwindigkeit meines Internetzugangsdienstes durchgeführt. Das amtliche
+  Messprotokoll der Bundesnetzagentur füge ich diesem Schreiben als Anlage bei.</p>
+
+  <p>Die Messung hat ergeben, dass die vertraglich vereinbarten Geschwindigkeitswerte nicht
+  eingehalten wurden:</p>
+
+  <ol class="criteria">
+    {{FAILED_CRITERIA_ITEMS}}
+  </ol>
+
+  <table class="data">
+    <tr><th>Vertraglich vereinbarte Maximalgeschwindigkeit</th><td>{{MAX_SPEED}} Mbit/s</td></tr>
+    <tr><th>Vertraglich vereinbarte Normalgeschwindigkeit</th><td>{{NORMAL_SPEED}} Mbit/s</td></tr>
+    <tr><th>Vertraglich vereinbarte Mindestgeschwindigkeit</th><td>{{MIN_SPEED}} Mbit/s</td></tr>
+  </table>
+
+  <p>Gemäß § 57 Abs. 4 i. V. m. Abs. 1 TKG bin ich daher berechtigt, das Entgelt für den
+  Internetzugangsdienst angemessen zu mindern. Auf Basis der eigenen Messwerte des
+  Messzeitraums beziffere ich die angemessene Minderung vorläufig auf</p>
+
+  <p class="reduction">{{REDUCTION_PERCENT}} %</p>
+
+  <p>des monatlichen Entgelts, beginnend ab der nächsten Abrechnungsperiode nach Zugang dieses
+  Schreibens. Ich behalte mir vor, diesen Wert nach abschließender Prüfung anzupassen.</p>
+
+  <p>Sollte die Beeinträchtigung nicht innerhalb einer angemessenen Frist behoben werden,
+  behalte ich mir zudem mein Recht zur außerordentlichen Kündigung des Vertrages gemäß
+  § 57 Abs. 4 TKG vor.</p>
+
+  <p>Ich bitte um Bestätigung des Erhalts dieses Schreibens sowie um Mitteilung, welche
+  Maßnahmen zur Behebung der Störung ergriffen werden.</p>
+
+  <div class="note">
+    Hinweis: Der oben genannte Minderungssatz wurde auf Basis der eigenen Messreihe rechnerisch
+    ermittelt (durchschnittliche Unterschreitung der vertraglich vereinbarten
+    Normgeschwindigkeit) und stellt eine eigene Einschätzung dar, keine amtliche Feststellung.
+    Rechtliche Grundlage des Anspruchs ist das beigefügte Messprotokoll der Bundesnetzagentur.
+  </div>
+
+  <p>Mit freundlichen Grüßen</p>
+
+  <div class="signature">{{SENDER_NAME}}</div>
+
+  <p class="attachment-note">Anlage: Messprotokoll der Bundesnetzagentur</p>
+</body>
+</html>

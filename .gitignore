@@ -5,6 +5,10 @@ node_modules
 apps/backend/src/generated/prisma
 apps/backend/dist
 
+# Local storage for uploaded protocols + generated complaint PDFs (Layer 2) —
+# production uses a mounted PVC instead, see config.ts storage.dataDir
+apps/backend/data
+
 # Dont include Ai Files
 CLAUDE.md
 skills-lock.json
