@@ -10,6 +10,7 @@ import * as campaignService from "../campaign/campaign.service.js";
 import type { CampaignWithDetails, UnderperformanceCriterion } from "../campaign/campaign.types.js";
 import * as monitoringService from "../monitoring/monitoring.service.js";
 import { protocolRepository } from "../protocol/protocol.repository.js";
+import * as settingsService from "../settings/settings.service.js";
 import { complaintRepository } from "./complaint.repository.js";
 import { ComplaintBasis, ReductionPercentMode } from "./complaint.types.js";
 import type { ComplaintDraft, GenerateComplaintInput, SetReductionPercentInput } from "./complaint.types.js";
@@ -83,20 +84,23 @@ export async function generateComplaint(input: GenerateComplaintInput): Promise<
   return generateInformalComplaint(contract);
 }
 
-// Sender identity (your own name/address) isn't captured anywhere in the
-// schema yet — out of this plan's scope — so these are explicit fill-in
-// placeholders in the generated PDF, not a gap in the logic.
-const SENDER_PLACEHOLDERS = {
-  SENDER_NAME: "[Ihr Name]",
-  SENDER_ADDRESS: "[Ihre Anschrift]",
-  SENDER_CITY: "[Ihr Ort]",
-};
+// Falls back to bracket placeholders only if Settings hasn't been filled in
+// yet — so generating a complaint before visiting the Settings page still
+// produces something, just with fill-in-the-blanks instead of your name.
+async function getSenderFields(): Promise<Record<string, string>> {
+  const settings = await settingsService.getSettings();
+  return {
+    SENDER_NAME: settings.senderName || "[Ihr Name]",
+    SENDER_ADDRESS: settings.senderAddress || "[Ihre Anschrift]",
+    SENDER_CITY: settings.senderCity || "[Ihr Ort]",
+  };
+}
 
 async function generateInformalComplaint(contract: Contract): Promise<ComplaintDraft> {
   const trend = await monitoringService.getTrendSummary(contract.id);
   const template = await loadTemplate("informal-complaint.html");
   const html = fillTemplate(template, {
-    ...SENDER_PLACEHOLDERS,
+    ...(await getSenderFields()),
     ISP_NAME: contract.ispName,
     ISP_ADDRESS: contract.ispAddress,
     DATE: formatGermanDate(new Date()),
@@ -162,7 +166,7 @@ async function generateFormalComplaint(
 
   const template = await loadTemplate("formal-complaint.html");
   const html = fillTemplate(template, {
-    ...SENDER_PLACEHOLDERS,
+    ...(await getSenderFields()),
     ISP_NAME: contract.ispName,
     ISP_ADDRESS: contract.ispAddress,
     DATE: formatGermanDate(new Date()),

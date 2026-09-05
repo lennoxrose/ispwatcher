@@ -23,6 +23,9 @@ interface Config {
   storage: {
     dataDir: string;
   };
+  auth: {
+    bootstrapToken: string;
+  };
 }
 
 function requireEnv(name: string): string {
@@ -87,5 +90,11 @@ export const config: Config = {
     // path for local dev; production points this at a mounted PVC (see the
     // argocd repo's apps/speed-nachweis/ deployment).
     dataDir: process.env.DATA_DIR ?? "./data",
+  },
+  auth: {
+    // Seeds Settings.apiToken only if no settings row exists yet (see
+    // settings.repository.ts). After that the DB row is authoritative —
+    // regenerating the token via the UI doesn't touch this env var.
+    bootstrapToken: requireEnv("API_TOKEN"),
   },
 };

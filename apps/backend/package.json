@@ -14,6 +14,7 @@
     "prisma:status": "prisma migrate status"
   },
   "dependencies": {
+    "@fastify/cors": "^10.0.1",
     "@fastify/multipart": "^9.2.1",
     "@prisma/adapter-mariadb": "^7.10.0",
     "@prisma/client": "^7.10.0",

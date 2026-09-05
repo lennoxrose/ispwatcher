@@ -52,3 +52,11 @@ export async function logMeasurement(
   );
   reply.code(201).send(measurement);
 }
+
+export async function evaluate(
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply,
+): Promise<void> {
+  const evaluation = await campaignService.evaluateCampaign(Number(request.params.id));
+  reply.send(evaluation);
+}

@@ -119,3 +119,17 @@ model ComplaintDraft {
   @@index([contractId])
   @@index([campaignId])
 }
+
+// Singleton — always accessed via findFirst()/getOrCreate(), never by a
+// hardcoded id. apiToken is deliberately stored in plaintext (not hashed):
+// this is a single-user tool and the whole point is the Settings page can
+// show/copy it, not just confirm it's set.
+model Settings {
+  id            Int      @id @default(autoincrement())
+  senderName    String   @default("")
+  senderAddress String   @default("")
+  senderCity    String   @default("")
+  apiToken      String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

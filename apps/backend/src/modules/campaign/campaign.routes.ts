@@ -56,4 +56,5 @@ export async function campaignRoutes(app: FastifyInstance): Promise<void> {
     { schema: logMeasurementSchema },
     campaignController.logMeasurement,
   );
+  app.get("/:id/evaluate", { schema: idParamSchema }, campaignController.evaluate);
 }
